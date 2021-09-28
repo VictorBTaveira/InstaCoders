@@ -1,3 +1,4 @@
+import math
 class Graph():
     def __init__(self) -> None:
         self.adjacency = {}
@@ -93,12 +94,51 @@ class Graph():
             return False
         return False
 
-    def _path(self, origin, destination, search="BFS"):
+    def djikstra(self, origin):
+        return self._djikstra(origin, self.adjacency)
+                
+    def _djikstra(self, origin, adjacency=None):
+        if adjacency is None:
+            adjacency = self.adjacency
+        distance = {vertex: math.inf for vertex in adjacency.keys()}
+        distance[origin] = 0
+        
+        previous = {vertex: None for vertex in adjacency.keys()}
+        
+        visited = []
+        notVisited = distance.copy()
+        
+        while len(notVisited) > 0:
+            currentVertex = sorted(notVisited.items(), key=lambda x: x[1])[0][0]
+            del notVisited[currentVertex]
+            visited.append(currentVertex)
+            
+            for adjacent in adjacency[currentVertex]:
+                if adjacent not in visited:
+                    newDistance = distance[currentVertex] + adjacency[currentVertex][adjacent]
+                    if newDistance < distance[adjacent]:
+                        distance[adjacent] = newDistance
+                        notVisited[adjacent] = newDistance
+                        previous[adjacent] = currentVertex
+    
+        return distance, previous
+
+    def _pathDJK(self, origin, destination):
+        previous = {}
+        if origin in self.adjacency.keys() and destination in self.adjacency.keys():
+            distances, previous = self.djikstra(origin)
+            if distances[destination] == math.inf:
+                previous.clear()
+        return previous
+
+    def _path(self, origin, destination, search=None):
         if search == "DFS":
             return self._pathDFS(origin, destination)
-        return self._pathBFS(origin, destination)
+        elif search == "BFS":
+            return self._pathBFS(origin, destination)
+        return self._pathDJK(origin, destination)
 
-    def straightPath(self, origin, destination, search="BFS") -> tuple:
+    def straightPath(self, origin, destination, search=None):
         visited = self._path(origin, destination, search)
         path = list()
         
@@ -110,13 +150,12 @@ class Graph():
                 previous = visited[previous]
             path.reverse()
             
-        return tuple(path)
+        return path
 
-    def printPath(self, origin, destination, search="BFS") -> None:
+    def printPath(self, origin, destination, search=None) -> None:
         path = self.straightPath(origin, destination, search)
         if path:
-            output = " -> ".join(str(vertex) for vertex in path if vertex)
+            output = " -> ".join(path)
         else:
             output = f"There is no path between {origin} and {destination}."
         print(output)
-        
