@@ -44,30 +44,6 @@ class Graph():
             tops = dict(inDegrees[:k])
         finally:
             return tops
-    
-    def _pathDFS(self, origin, destination):
-        previous = {}
-        if origin in self.adjacency and destination in self.adjacency:
-            previous[origin] = None
-            if not self.existsPathDFS(origin, destination, previous=previous):
-                previous.clear()
-        return previous
-
-    def _existsPathDFS(self, origin, destination, previous):
-        if origin in self.adjacency and destination in self.adjacency:
-            if len(previous) == 0:
-                previous = {origin: None}
-
-            if origin == destination:
-                return True
-            
-            for neighbor in self.adjacency[origin].keys():
-                if neighbor not in previous:
-                    previous[neighbor] = origin
-                    if self.existsPathDFS(neighbor, destination, previous):
-                        return True
-            return False
-        return False
 
     def _pathBFS(self, origin, destination):
         previous = {}
@@ -132,9 +108,7 @@ class Graph():
         return previous
 
     def _path(self, origin, destination, search=None):
-        if search == "DFS":
-            return self._pathDFS(origin, destination)
-        elif search == "BFS":
+        if search == "BFS":
             return self._pathBFS(origin, destination)
         return self._pathDJK(origin, destination)
 
