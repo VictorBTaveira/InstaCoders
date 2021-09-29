@@ -18,9 +18,8 @@ with open('usuarios.csv') as csvfile:
     users = []
     for name,nick in reader:
 
-         vertex = User(name,nick)
 
-         insta.add(vertex)
+         insta.createAccount(User(name,nick))
 
          users.append(vertex)
 
@@ -33,6 +32,14 @@ Esse bloco inidca o nodo de origem, nodo de destino e o peso desta conexão
 with open('conexoes.csv') as csvfile:
 
     reader = csv.reader(csvfile)
+
+
+    for src,dst,pref in reader:
+
+
+         insta.follow(str(src),str(dst),pref)
+
+
 
 
     for source,dst,weight in reader:
@@ -52,3 +59,4 @@ print(f'\nOs top influencer são\n')
 insta.topInfluencers(6)
 print(f'\nO caminho de {username} para {anotherUsername} é\n')
 insta.followingPath(user, anotherUser) 
+>>>>>>> 783f887d903bc6081ca8ba178af0d43f30de6494
