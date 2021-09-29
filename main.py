@@ -59,4 +59,4 @@ print(f'\nOs top influencer são\n')
 insta.topInfluencers(6)
 print(f'\nO caminho de {username} para {anotherUsername} é\n')
 insta.followingPath(user, anotherUser) 
->>>>>>> 783f887d903bc6081ca8ba178af0d43f30de6494
+
