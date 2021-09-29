@@ -42,7 +42,7 @@ def quicksort(_list, begin=0, end=None):
         index = partition(_list, begin, end)
         quicksort(_list, begin, index-1)
         quicksort(_list, index+1, end)
-        return _list
+    return _list
 
 def partition(_list, begin, end):
     sep = begin

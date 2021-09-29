@@ -15,13 +15,16 @@ with open('usuarios.csv') as csvfile:
 
     reader = csv.reader(csvfile)
 
-
+    users = []
     for name,nick in reader:
 
          vertex = User(name,nick)
 
          insta.add(vertex)
 
+         users.append(vertex)
+
+users = {user.username: user for user in users}
 
 """
 Esse bloco inidca o nodo de origem, nodo de destino e o peso desta conexão
@@ -33,7 +36,19 @@ with open('conexoes.csv') as csvfile:
 
 
     for source,dst,weight in reader:
-        
-        pass
+        follower = users[source] 
+        followed = users[dst]
+        insta.follow(follower, followed, int(weight))
 
-print(insta.adjacency)
+username = "helena42"
+user = users[username]
+anotherUsername = "isadora45"
+anotherUser = users[anotherUsername]
+
+print(f'\nquantidade de seguidores de {username} {insta.followersNumber(user)}') 
+print(f'\nquantidade de amizades de {username} é {insta.followingNumber(user)}') 
+print(f'\nos stories de {username} : {insta.getStories(user)}') 
+print(f'\nOs top influencer são\n')
+insta.topInfluencers(6)
+print(f'\nO caminho de {username} para {anotherUsername} é\n')
+insta.followingPath(user, anotherUser) 
