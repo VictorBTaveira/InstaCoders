@@ -1,14 +1,19 @@
 from graph import Graph
-from mysort import mySort
 import math
 
 class InstaCoders(Graph):
 
     def __init__(self) -> None:
         super().__init__()
+        self.users = {}
 
     def createAccount(self, user):
         super().add(user)
+        self.users[user.username] = user
+
+    def deleteAccount(self, user):
+        super().delete(user)
+        del self.users[user]
 
     def follow(self, follower, followed, bestFriend):
         super().addArrow(follower, followed, bestFriend)
@@ -23,7 +28,25 @@ class InstaCoders(Graph):
         return super().inDegree(user)
 
     def topInfluencers(self, k):
-        topInfluencers = super().topIncomingVertices(k)
+        inDegrees = [(v, self.inDegree(v)) for v in self.adjacency.keys()]
+        inDegrees = self.quicksort(inDegrees, sortBy="followers")
+        tops = None
+        try:
+            k = int(k)
+            if not k > 0:
+                raise Exception
+        except:
+            print("Invalid parameter: k must be a positive integer.")
+        else:
+            if k > len(self.adjacency.keys()):
+                k = len(self.adjacency.keys())
+            end = len(inDegrees) - 1
+            tops = dict(inDegrees[end:end - k:-1])
+        finally:
+            return tops
+
+    def printTopInfluencers(self, k):
+        topInfluencers = self.topInfluencers(k)
         if topInfluencers:
             print("{:4} {:20} {:>9}".format("Rank", "User", "Followers"))
             for i, user in enumerate(topInfluencers.keys()):
@@ -34,7 +57,7 @@ class InstaCoders(Graph):
         stories = list()
         for i in range(2, 0, -1):
             friendshipGroup = [x for x in self.adjacency[user].keys() if self.adjacency[user].get(x) == i]
-            friendshipGroup = mySort(friendshipGroup)
+            friendshipGroup = self.quicksort(friendshipGroup)
             stories += friendshipGroup
         
         return stories
@@ -78,3 +101,30 @@ class InstaCoders(Graph):
 
     def followingPath(self, origin, destination):
         self._printPath(origin, destination)
+
+    def quicksort(self, _list, begin=0, end=None, sortBy=None):
+        if end is None:
+            end = len(_list) - 1
+
+        if (end - begin) > 0:
+            index = self.partition(_list, begin, end, sortBy)
+            self.quicksort(_list, begin, index-1, sortBy)
+            self.quicksort(_list, index+1, end, sortBy)
+        return _list
+
+    def partition(self, _list, begin, end, sortBy=None):
+        sep = begin
+        pivot = _list[end]
+        for i in range(begin, end):
+            if sortBy: # followers
+                elementValue = _list[i][1]
+                pivotValue = pivot[1]
+            else:
+                elementValue = _list[i].username
+                pivotValue = pivot.username
+
+            if elementValue < pivotValue:
+                _list[i], _list[sep] = _list[sep], _list[i]
+                sep += 1
+        _list[sep], _list[end] = _list[end], _list[sep]
+        return sep

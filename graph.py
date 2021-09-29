@@ -7,6 +7,10 @@ class Graph():
         if vertex not in self.adjacency:
             self.adjacency[vertex] = {}
 
+    def delete(self, vertex):
+        if vertex in self.adjacency:
+            del self.adjacency[vertex]
+
     def addArrow(self, source, target, weight=1):
         if source in self.adjacency:
             self.adjacency[source][target] = weight
@@ -27,23 +31,6 @@ class Graph():
     def inDegree(self, vertex):
         if vertex in self.adjacency.keys():
             return sum(self._isAdjacent(vertex, u) for u in self.adjacency.keys())
-
-    def topIncomingVertices(self, k):
-        inDegrees = [(v, self.inDegree(v)) for v in self.adjacency.keys()]
-        inDegrees = sorted(inDegrees, key=lambda x: x[1], reverse=True)
-        tops = None
-        try:
-            k = int(k)
-            if not k > 0:
-                raise Exception
-        except:
-            print("Invalid parameter: k must be a positive integer.")
-        else:
-            if k > len(self.adjacency.keys()):
-                k = len(self.adjacency.keys())
-            tops = dict(inDegrees[:k])
-        finally:
-            return tops
 
     def _pathBFS(self, origin, destination):
         previous = {}
