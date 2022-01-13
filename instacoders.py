@@ -5,7 +5,8 @@ class InstaCoders(Graph):
 
     def __init__(self) -> None:
         super().__init__()
-        self.users = {}
+        self.users = {} # creates a mapping of users to classes acess  # each member by the refernece 
+       
 
     def createAccount(self, user):
         super().add(user)
